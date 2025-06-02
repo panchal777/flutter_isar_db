@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_isar_db/feature/cubit/isar/isar_cubit.dart';
 import 'package:flutter_isar_db/feature/cubit/isar/isar_states.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import '../../core/isar_database/models/user_model.dart';
+import '../../core/isar_database/models/user.dart';
 import '../../core/utils/utils.dart' show Utils;
 import 'add_edit_widget.dart';
 
 class IsarListComponent extends StatefulWidget {
   final Color? appBarColor;
   final String title;
-  final Function(UserModelData userModel) addItem;
-  final Function(UserModelData userModel, int index) editItem;
+  final Function(User userModel) addItem;
+  final Function(User userModel, int index) editItem;
   final Function(int index, int id) deleteItem;
 
   const IsarListComponent({
@@ -28,7 +28,7 @@ class IsarListComponent extends StatefulWidget {
 }
 
 class _IsarListComponentState extends State<IsarListComponent> {
-  List<UserModelData> userList = [];
+  List<User> userList = [];
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +57,7 @@ class _IsarListComponentState extends State<IsarListComponent> {
           child: BlocBuilder<IsarCubit, IsarStates>(
             builder: (context, state) {
               if (state is SuccessState) {
-                // userList = state.userList;
+                userList = state.userList;
               }
 
               return state is StateLoading
@@ -99,7 +99,7 @@ class _IsarListComponentState extends State<IsarListComponent> {
                                   // An action can be bigger than the others.
                                   flex: 1,
                                   onPressed: (context) {
-                                    widget.deleteItem(index, data.id);
+                                    widget.deleteItem(index, data.id!);
                                   },
                                   backgroundColor: Colors.red,
                                   foregroundColor: Colors.white,
@@ -140,11 +140,7 @@ class _IsarListComponentState extends State<IsarListComponent> {
     );
   }
 
-  void _showInputDialog({
-    bool isEdit = false,
-    int index = 0,
-    UserModelData? userModel,
-  }) {
+  void _showInputDialog({bool isEdit = false, int index = 0, User? userModel}) {
     TextEditingController firstNameController = TextEditingController(
       text: isEdit ? userModel?.firstName : '',
     );
@@ -188,10 +184,10 @@ class _IsarListComponentState extends State<IsarListComponent> {
           content: content,
           formKey: formKey,
           submit: () {
-            var model = UserModelData(
+            var model = User(
               firstName: firstNameController.text,
               lastName: lastNameController.text,
-              id: userModel?.id ?? -1,
+              id: isEdit ? userModel?.id : null,
             );
 
             isEdit ? widget.editItem(model, index) : widget.addItem(model);

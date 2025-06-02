@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_isar_db/feature/cubit/isar/isar_cubit.dart';
 import '../components/isar_list_component.dart';
 
 class TodoIsarPage extends StatelessWidget {
@@ -11,9 +13,15 @@ class TodoIsarPage extends StatelessWidget {
     return IsarListComponent(
       appBarColor: appBarColor,
       title: 'CRUD (ISAR)',
-      addItem: (todoModel) {},
-      editItem: (todoModel, index) {},
-      deleteItem: (index, id) {},
+      addItem: (model) {
+        context.read<IsarCubit>().addItemToList(model);
+      },
+      editItem: (model, index) {
+        context.read<IsarCubit>().editItemToList(index, model);
+      },
+      deleteItem: (index, id) {
+        context.read<IsarCubit>().deleteItemFromList(id);
+      },
     );
   }
 }

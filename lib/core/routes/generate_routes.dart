@@ -15,7 +15,7 @@ Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     return _buildRoute(
       settings,
       BlocProvider(
-        create: (_) => IsarCubit()..getUserList(),
+        create: (_) => IsarCubit()..getAllUsers(),
         child: TodoIsarPage(appBarColor: appBarColor),
       ),
     );
